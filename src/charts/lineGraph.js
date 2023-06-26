@@ -8,9 +8,6 @@ const LineGraph = () => {
     },
     xaxis: {
       categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-    },
-    toolbar: {
-      show: false // Hide the toolbar icons
     }
   });
 
@@ -22,9 +19,9 @@ const LineGraph = () => {
   ]);
 
   return (
-    <div>
-      <div>
-        <div>
+    <div className="LineGraph">
+      <div className="row">
+        <div className="chart">
           <Chart options={options} series={series} type="line" width="300" />
         </div>
       </div>
