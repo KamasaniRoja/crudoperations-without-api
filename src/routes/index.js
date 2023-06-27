@@ -7,6 +7,7 @@ import Login from '../pages/auth/Login';
 import SignUp from '../pages/auth/SignUp';
 import ForgotPasswordForm from '../pages/auth/ForgotPassword';
 import NewPassword from '../pages/auth/NewPassword';
+import UserDetails from '../pages/auth/UserDetails';
 
 export default function Router() {
   return useRoutes([
@@ -43,6 +44,9 @@ export default function Router() {
     {
       path: '/newpassword',
       element: <NewPassword />
-    }
+    },
+    {path:'/userdetails',
+    element:<UserDetails/>
+  }
   ]);
 }

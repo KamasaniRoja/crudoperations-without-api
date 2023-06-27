@@ -113,7 +113,29 @@ function Appbar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const isLoginPage = location.pathname === PATH_AUTH.login;
 
+  if (isLoginPage) {
+    return (
+      <ThemeProvider theme={mdTheme}>
+        <Box sx={{ display: 'flex' }}>
+          <CssBaseline />
+          <Box
+            component="main"
+            sx={{
+              backgroundColor: (theme) =>
+                theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
+              flexGrow: 1,
+              height: '100vh',
+              overflow: 'auto'
+            }}>
+            <Toolbar />
+            <Router />
+          </Box>
+        </Box>
+      </ThemeProvider>
+    );
+  }
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>

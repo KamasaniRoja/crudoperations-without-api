@@ -28,11 +28,13 @@ export const PATH_AUTH = {
   signup: path(ROOTS_AUTH, '/signup'),
   forgotpassword: path(ROOTS_AUTH, '/forgotpassword'),
   newpassword: path(ROOTS_AUTH, '/newpassword'),
+  userdetails: path(ROOTS_DASHBOARD, '/userdetails'),
 };
 export const PATH_DASHBOARD = {
   root: ROOTS_DASHBOARD,
   dashboard: path(ROOTS_DASHBOARD, '/dashboard'),
   departmentlist: path(ROOTS_DASHBOARD, '/department'),
   usermanagement: path(ROOTS_DASHBOARD, '/usermanagement'),
-  roleslist: path(ROOTS_DASHBOARD, '/roleslist')
+  roleslist: path(ROOTS_DASHBOARD, '/roleslist'),
+ 
 };
