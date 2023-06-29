@@ -16,6 +16,7 @@ import { PATH_AUTH } from '../../routes/paths';
 import Iconify from '../../components/Iconify';
 import BusinessIcon from '@mui/icons-material/Business';
 import GoogleIcon from '@mui/icons-material/Google';
+import { fetchSignupService } from '../../services/authService';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -24,16 +25,14 @@ export default function SignUp() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
-   if (Object.values(data).some((value) => value.trim() === '')) {
-      return;
-    }
-   console.log(data); 
-   navigate(PATH_AUTH.userdetails);
+    const data = new FormData(event.currentTarget);
+    const user = { email: data.get('email'), password: data.get('password'),hotel_name:data.get('hotel_name') };
+    console.log(user);
+    const token = await fetchSignupService(user);
+    console.log(token);
+    localStorage.setItem(token, token);
   };
   
 
@@ -137,7 +136,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="" variant="body2" onClick={() => navigate(PATH_AUTH.login)}>
                   Already have an account? Sign in
                 </Link>
               </Grid>

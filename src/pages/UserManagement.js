@@ -1,9 +1,9 @@
+/* eslint-disable array-callback-return */
 import React, { useEffect, useState, useRef } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { makeStyles, useTheme } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import Typography from '@mui/material/Typography';
-import Icon from '@mui/material/Icon';
 import IconButton from '@mui/material/IconButton';
 import Iconify from '../components/Iconify';
 import { Stack, TextField, MenuItem, InputAdornment, Grid } from '@mui/material';
@@ -25,8 +25,13 @@ import Dialog from '@mui/material/Dialog';
 import Toolbar from '@mui/material/Toolbar';
 import CircularProgress from '@mui/material/CircularProgress';
 import AddSharpIcon from '@mui/icons-material/AddSharp';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ViewArrayIcon from '@mui/icons-material/ViewArray';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+
 import {
-    getUsersList,
+    // getUsersList,
     createUsersList,
     updateUsersList,
     deleteUsersList
@@ -65,7 +70,8 @@ const UserManagement = () => {
     const classes = useStyles();
     const theme = useTheme();
     const dispatch = useDispatch();
-    const userList = useSelector(({ users }) => users.usersList);
+    const userList = useSelector(({ users }) => users.userslist);
+    console.log(userList)
     const usersCount = useSelector(({ users }) => users.usersCount);
     const loading1 = useSelector(({ loading }) => loading.loading1);
     const initialFields = {
@@ -74,13 +80,15 @@ const UserManagement = () => {
         email: '',
         phone_number: '',
         password: '',
-        roleid: '',
+        role: '',
 
     };
     const { form, handleChange, setForm, resetForm } = useForm(initialFields);
     const [openDialog, setOpenDialog] = useState(false);
     const [open, setOpen] = useState(false);
     const [createStatus, setCreateStatus] = useState(false);
+    const [openViewDialog, setopenViewDialog] = useState(false);
+    const [details, setDetails] = useState();
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef(null);
     const [removeData, setRemoveData] = useState({});
@@ -111,6 +119,13 @@ const UserManagement = () => {
         });
     };
 
+    const handleViewOpen = (data) => {
+        setDetails(data);
+        setopenViewDialog(true);
+    };
+    const handleViewClose = () => {
+        setopenViewDialog(false);
+    };
     const rows = [
         {
             id: 'uuid',
@@ -171,16 +186,16 @@ const UserManagement = () => {
     };
 
     useEffect(() => {
-        dispatch(
-            getUsersList({
-                // search,
-                // page: page + 1,
-                // limit: rowsPerPage,
-                // sortBy: order.id,
-                // sortDirection: order.direction
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getUsersList({
+        //         // search,
+        //         // page: page + 1,
+        //         // limit: rowsPerPage,
+        //         // sortBy: order.id,
+        //         // sortDirection: order.direction
+        //         // status: filterRole,
+        //     })
+        // );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -196,8 +211,18 @@ const UserManagement = () => {
         setCreateStatus(false);
         setOpenDialog(false);
     };
-
+    const setFormData = (data1, data2) => {
+        // eslint-disable-next-line array-callback-return
+        Object.keys(data1).map(function (key1) {
+            Object.keys(data2).map(function (key2) {
+                if (key1 === key2) {
+                    data1[key1] = data2[key2];
+                }
+            });
+        });
+    };
     const updateFun = (data) => {
+        setFormData(initialFields, data);
         setForm({
             ...initialFields,
             is_active: String(data.is_active)
@@ -241,31 +266,31 @@ const UserManagement = () => {
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-        dispatch(
-            getUsersList({
-                //  search,
-                // page: newPage + 1,
-                // limit: rowsPerPage,
-                // sortBy: order.id,
-                // sortDirection: order.direction
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getUsersList({
+        //         //  search,
+        //         // page: newPage + 1,
+        //         // limit: rowsPerPage,
+        //         // sortBy: order.id,
+        //         // sortDirection: order.direction
+        //         // status: filterRole,
+        //     })
+        // );
     };
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
-        dispatch(
-            getUsersList({
-                //  search,
-                // page: 0 + 1,
-                // limit: parseInt(event.target.value, 10),
-                // sortBy: order.id,
-                // sortDirection: order.direction
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getUsersList({
+        //         //  search,
+        //         // page: 0 + 1,
+        //         // limit: parseInt(event.target.value, 10),
+        //         // sortBy: order.id,
+        //         // sortDirection: order.direction
+        //         // status: filterRole,
+        //     })
+        // );
     };
 
     const handleRequestSort = (property) => () => {
@@ -276,32 +301,32 @@ const UserManagement = () => {
             direction = 'asc';
         }
         setOrder({ direction, id });
-        dispatch(
-            getUsersList({
-                // search,
-                // page: page + 1,
-                // limit: rowsPerPage,
-                // sortBy: id,
-                // sortDirection: direction
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getUsersList({
+        //         // search,
+        //         // page: page + 1,
+        //         // limit: rowsPerPage,
+        //         // sortBy: id,
+        //         // sortDirection: direction
+        //         // status: filterRole,
+        //     })
+        // );
     };
 
     const handleSearch = (data) => {
         setSearch(data);
-        if (data === '' || data.length > 1) {
-            dispatch(
-                getUsersList({
-                    //   search: data,
-                    //   page: page + 1,
-                    //   limit: rowsPerPage,
-                    //   sortBy: order.id,
-                    //   sortDirection: order.direction
-                    // status: filterRole,
-                })
-            );
-        }
+        // if (data === '' || data.length > 1) {
+        //     dispatch(
+        //     //     getUsersList({
+        //     //         //   search: data,
+        //     //         //   page: page + 1,
+        //     //         //   limit: rowsPerPage,
+        //     //         //   sortBy: order.id,
+        //     //         //   sortDirection: order.direction
+        //     //         // status: filterRole,
+        //     //     })
+        //     // );
+        // }
     };
 
 
@@ -428,8 +453,8 @@ const UserManagement = () => {
                                         }
                                     }}>
                                     <TableCell>
-                                        <Tooltip title={res.uuid} placement="top" arrow>
-                                            <Icon fontSize="small">grid_3x3</Icon>
+                                        <Tooltip title={res.id} placement="top" arrow>
+                                            <ViewArrayIcon />
                                         </Tooltip>
                                     </TableCell>
                                     <TableCell component="th" scope="row">
@@ -439,9 +464,9 @@ const UserManagement = () => {
                                     <TableCell>{res.phone_number}</TableCell>
                                     <TableCell>
                                         <Chip
-                                            label={res.is_active ? 'Active' : 'Inactive'}
+                                            label={res.status ? 'active' : 'Inactive'}
                                             size="small"
-                                            color={res.is_active ? 'primary' : 'error'}
+                                            color={res.status ? 'primary' : 'error'}
                                         />
                                     </TableCell>
                                     <TableCell align="inherit">
@@ -452,7 +477,7 @@ const UserManagement = () => {
                                                     size="small"
                                                     disableRipple
                                                     sx={{ bgcolor: theme.palette.info.main, color: '#fff' }}>
-                                                    <Icon>edit</Icon>
+                                                    <EditIcon />
                                                 </IconButton>
                                             </Tooltip>
                                             <Tooltip title="Delete" arrow>
@@ -461,7 +486,16 @@ const UserManagement = () => {
                                                     size="small"
                                                     disableRipple
                                                     sx={{ bgcolor: theme.palette.error.main, color: '#fff' }}>
-                                                    <Icon>delete</Icon>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Delete" arrow>
+                                                <IconButton
+                                                    onClick={() => handleViewOpen(res)}
+                                                    size="small"
+                                                    disableRipple
+                                                    sx={{ bgcolor: theme.palette.info.main, color: '#fff' }}>
+                                                    <RemoveRedEyeIcon />
                                                 </IconButton>
                                             </Tooltip>
                                         </Stack>
@@ -612,21 +646,22 @@ const UserManagement = () => {
                                 />
                             </>
                         )}
+                       
                         <TextFieldFormsy
-                            label="RoleID"
-                            id="roleid"
-                            name="roleid"
-                            value={form.roleid}
-                            onChange={handleChange}
-                            variant="outlined"
+                            label="Roles"
+                            id="role"
+                            name="role"
                             required
+                            variant="outlined"
                             fullWidth
-                            // focused
+                            value={form.role}
                             InputLabelProps={{
                                 shrink: true
                             }}
-                        // size="small"
-                        />
+                            // onChange={(value) => setForm({ ...form, roles: value.target.value })}
+                            >
+                           
+                        </TextFieldFormsy>
                         <Grid container direction="row" justifyContent="space-between" alignItems="baseline">
                             <Grid item>
                                 <Button
@@ -703,6 +738,92 @@ const UserManagement = () => {
                         </Grid>
                     </Grid>
                 </Box>
+            </Dialog>
+            <Dialog
+                open={openViewDialog}
+                fullWidth
+                maxWidth="sm"
+                disableEscapeKeyDown
+                aria-labelledby="form-dialog-title"
+                classes={{
+                    paper: 'rounded-8'
+                }}>
+                <Toolbar>
+                    <Typography variant="h5" color="primary">
+                        User Details
+                    </Typography>
+                </Toolbar>
+                <TableContainer sx={{ px: 2 }}>
+                    <Paper>
+                        <Table aria-label="simple table">
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            User Name
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{details?.name}</Typography>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Email
+                                        </Typography>
+                                    </TableCell>
+
+                                    <TableCell>{details?.email}</TableCell>
+                                </TableRow>
+
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Role
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{details?.role}</Typography>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Phone Number
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{details?.phone_number}</Typography>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Status
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{details?.status}</Typography>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </Paper>
+                </TableContainer>
+                <Grid container justifyContent="space-between" alignItems="baseline" direction="row">
+                    <Grid item />
+                    <Grid item>
+                        <Button
+                            sx={{ mt: 2, mb: 2, px: 4, mr: 2 }}
+                            // fullWidth
+                            variant="contained"
+                            onClick={handleViewClose}
+                            color="warning">
+                            Close
+                        </Button>
+                    </Grid>
+                </Grid>
             </Dialog>
         </div>
     );

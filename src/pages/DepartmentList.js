@@ -4,7 +4,6 @@ import { makeStyles, useTheme } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import Icon from '@mui/material/Icon';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import Table from '@mui/material/Table';
@@ -36,6 +35,9 @@ import TablePagination from '@mui/material/TablePagination';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 import { Stack, TextField, MenuItem, InputAdornment, Grid, Chip } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ViewArrayIcon from '@mui/icons-material/ViewArray';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -397,7 +399,7 @@ const DepartmentList = () => {
                                     }}>
                                     <TableCell>
                                         <Tooltip title={res.uuid} placement="top" arrow>
-                                            <Icon fontSize="small">grid_3x3</Icon>
+                                        <ViewArrayIcon/>
                                         </Tooltip>
                                     </TableCell>
                                     <TableCell component="th" scope="row">
@@ -420,7 +422,7 @@ const DepartmentList = () => {
                                                     size="small"
                                                     disableRipple
                                                     sx={{ bgcolor: theme.palette.info.main, color: '#fff' }}>
-                                                    <Icon>edit</Icon>
+                                                   <EditIcon />
                                                 </IconButton>
                                             </Tooltip>
                                             <Tooltip title="Delete" arrow>
@@ -429,7 +431,7 @@ const DepartmentList = () => {
                                                     size="small"
                                                     disableRipple
                                                     sx={{ bgcolor: theme.palette.error.main, color: '#fff' }}>
-                                                    <Icon>delete</Icon>
+                                                      <DeleteIcon />
                                                 </IconButton>
                                             </Tooltip>
                                         </Stack>

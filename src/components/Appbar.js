@@ -113,7 +113,7 @@ function Appbar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const isLoginPage = location.pathname === PATH_AUTH.login;
+ const isLoginPage = location.pathname === PATH_AUTH.login;
 
   if (isLoginPage) {
     return (

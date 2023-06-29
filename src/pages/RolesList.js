@@ -3,7 +3,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { makeStyles, useTheme } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import Typography from '@mui/material/Typography';
-import Icon from '@mui/material/Icon';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
@@ -24,6 +23,9 @@ import Dialog from '@mui/material/Dialog';
 import Toolbar from '@mui/material/Toolbar';
 import CircularProgress from '@mui/material/CircularProgress';
 import AddSharpIcon from '@mui/icons-material/AddSharp';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ViewArrayIcon from '@mui/icons-material/ViewArray';
 import {
     getRolesList,
     createRolesList,
@@ -45,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         margin: '20px',
         minHeight: '80vh'
-        
+
     },
     main: {
         marginTop: theme.spacing(8),
@@ -55,9 +57,9 @@ const useStyles = makeStyles((theme) => ({
 
 const status = [
     { label: 'All', value: 'all' },
-    { label: 'Basic', value: 'basic' },
-    { label: 'Employee', value: 'employee' },
-    { label: 'Owner', value: 'owner' }];
+    { label: 'Role 1', value: 'role1' },
+    { label: 'Role 2', value: 'role2' },
+    { label: 'Role 3', value: 'role3' }];
 
 const RolesList = () => {
     const classes = useStyles();
@@ -152,7 +154,7 @@ const RolesList = () => {
                 // status: filterRole,
             })
         );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
@@ -400,7 +402,7 @@ const RolesList = () => {
                                     }}>
                                     <TableCell>
                                         <Tooltip title={res.uuid} placement="top" arrow>
-                                            <Icon fontSize="small">grid_3x3</Icon>
+                                            <ViewArrayIcon />
                                         </Tooltip>
                                     </TableCell>
                                     <TableCell component="th" scope="row">
@@ -422,7 +424,7 @@ const RolesList = () => {
                                                     size="small"
                                                     disableRipple
                                                     sx={{ bgcolor: theme.palette.info.main, color: '#fff' }}>
-                                                    <Icon>edit</Icon>
+                                                    <EditIcon />
                                                 </IconButton>
                                             </Tooltip>
                                             <Tooltip title="Delete" arrow>
@@ -431,7 +433,7 @@ const RolesList = () => {
                                                     size="small"
                                                     disableRipple
                                                     sx={{ bgcolor: theme.palette.error.main, color: '#fff' }}>
-                                                    <Icon>delete</Icon>
+                                                    <DeleteIcon />
                                                 </IconButton>
                                             </Tooltip>
                                         </Stack>

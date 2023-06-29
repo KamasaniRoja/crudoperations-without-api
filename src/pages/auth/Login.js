@@ -14,7 +14,11 @@ import { useNavigate } from 'react-router-dom';
 import { PATH_AUTH, PATH_DASHBOARD } from '../../routes/paths';
 import { InputAdornment, IconButton } from '@mui/material';
 import Iconify from '../../components/Iconify';
-import GoogleIcon from '@mui/icons-material/Google';
+import useAuth from '../../hooks/useAuth';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
+import { fetchLoginService } from '../../services/authService'
+
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -23,16 +27,51 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-     navigate(PATH_DASHBOARD.dashboard)
+  const { login } = useAuth();
+  const clientId = "106381978093-gptl8utmu520kd6dqesdavq0vpb9s3mu.apps.googleusercontent.com";
+
+  const onSuccess = async (response) => {
+    try {
+      const { accessToken, profileObj } = response;
+
+
+      const apiResponse = await fetch('/auth/google', {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ accessToken, profileObj }),
+      });
+
+      if (apiResponse.ok) {
+        console.log('API request successful!');
+        
+      } else {
+        console.error('API request failed!');
+
+      }
+    } catch (error) {
+      console.error('Error occurred during API request:', error);
+    }
   };
+
+  const onFailure = (error) => {
+    console.error('Login failed:', error);
+  };
+  const handleSubmit = async (data) => {
+    console.log(data);
+    // try {
+    //   const response = await login(data.email, data.password).then(() => {
+    //     console.log(response);
+    //    
+    //   });
+    // } catch (error) {
+    //   console.log(error)
+    //   return error
+    // }
+
+  };
+  
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -77,7 +116,7 @@ export default function SignIn() {
                   fullWidth
                   name="password"
                   label="Password"
-                  type={showPassword ? 'text' : 'password'} // Toggle between 'text' and 'password' type
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   autoComplete="new-password"
                   InputProps={{
@@ -106,23 +145,23 @@ export default function SignIn() {
             >
               Sign In
             </Button>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 1.5, mb: 2, gap: '8px', alignItems: 'center' }}
-            >
-              <GoogleIcon />
-              <span>Sign In With Google</span>
-            </Button>
+            <GoogleOAuthProvider clientId={clientId}>
+              <GoogleLogin
+                onSuccess={onSuccess}
+                onFailure={onFailure}
+                buttonText="Login with Google"
+
+              />
+
+            </GoogleOAuthProvider>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2" onClick={() => navigate(PATH_AUTH.forgotpassword)}>
+                <Link href="" variant="body2" onClick={() => navigate(PATH_AUTH.forgotpassword)}>
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2" onClick={() => navigate(PATH_AUTH.signup)}>
+                <Link href="" variant="body2" onClick={() => navigate(PATH_AUTH.signup)}>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

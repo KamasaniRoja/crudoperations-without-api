@@ -76,7 +76,7 @@ function AuthProvider({ children }) {
         const accessToken = localStorage.getItem('accessToken');
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
-          const response = await axiosConfig.get('/auth/user/profile/1');
+          const response = await axiosConfig.get('/auth/user/profile');
 
           const { user_profile } = response.data;
 
@@ -115,35 +115,30 @@ function AuthProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const login = async (username, password) => {
+  const login = async (email, password) => {
     const formData = {
-      email: username,
+      email,
       password,
     };
     const response = await fetchLoginService(formData);
+    console.log(response);
+    // if (response.status) {
 
-    if (response.status) {
-      if (response.challenge === 'EMAIL_OTP_VERIFY') {
-        const { session_token, session_uuid } = response;
-        localStorage.setItem('sessionToken', session_token);
-        localStorage.setItem('sessionUuid', session_uuid);
-        return response;
-      }
-      setAuthToken(response.data.access_token);
-      setSession(response.data.access_token);
-      const responsenew = await axiosConfig.get('/auth/user/profile/1');
-      console.log(responsenew);
-      const { user_profile } = responsenew.data;
+    //   setAuthToken(response.data.access_token);
+    //   setSession(response.data.access_token);
+    //   const responsenew = await axiosConfig.get('/auth/user/profile');
+    //   console.log(responsenew);
+    //   const { user_profile } = responsenew.data;
 
-      dispatch({
-        type: 'LOGIN',
-        payload: {
-          user: { ...state.user, ...user_profile },
-        },
-      });
+    //   dispatch({
+    //     type: 'LOGIN',
+    //     payload: {
+    //       user: { ...state.user, ...user_profile },
+    //     },
+    //   });
 
-      return response;
-    }
+    //   return response;
+    // }
     return response;
   };
 
@@ -162,20 +157,20 @@ function AuthProvider({ children }) {
     return response;
   };
 
-const logout = async () => {
+  const logout = async () => {
     dispatch({ type: 'LOGOUT' });
     setSession(null);
     googleLogout();
     reduxdispatch({ type: 'DESTROY_SESSION' });
   };
 
-const googleLogin = async (tokenResponse) => {
+  const googleLogin = async (tokenResponse) => {
     const response = await fetchGoogleLoginService(tokenResponse.access_token);
     if (response && response.status) {
       if (response.data.access_token) {
         setAuthToken(response.data.access_token);
         setSession(response.data.access_token);
-        const responsenew = await axiosConfig.get('/auth/user/profile/1');
+        const responsenew = await axiosConfig.get('/auth/user/profile');
 
         const { user_profile } = responsenew.data;
 
