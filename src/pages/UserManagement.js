@@ -156,7 +156,7 @@ const UserManagement = () => {
             sort: true
         },
         {
-            id: 'is_active',
+            id: 'status',
             align: 'left',
             disablePadding: false,
             label: 'Status',
@@ -212,7 +212,6 @@ const UserManagement = () => {
         setOpenDialog(false);
     };
     const setFormData = (data1, data2) => {
-        // eslint-disable-next-line array-callback-return
         Object.keys(data1).map(function (key1) {
             Object.keys(data2).map(function (key2) {
                 if (key1 === key2) {
@@ -225,7 +224,7 @@ const UserManagement = () => {
         setFormData(initialFields, data);
         setForm({
             ...initialFields,
-            is_active: String(data.is_active)
+            status: String(data.status)
         });
         setOpenDialog(true);
     };
@@ -470,7 +469,7 @@ const UserManagement = () => {
                                         />
                                     </TableCell>
                                     <TableCell align="inherit">
-                                        <Stack direction="row" spacing={2}>
+                                        <Stack direction="row" spacing={1}>
                                             <Tooltip title="Edit" arrow>
                                                 <IconButton
                                                     onClick={() => updateFun(res)}
@@ -489,7 +488,7 @@ const UserManagement = () => {
                                                     <DeleteIcon />
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title="Delete" arrow>
+                                            <Tooltip title="View" arrow>
                                                 <IconButton
                                                     onClick={() => handleViewOpen(res)}
                                                     size="small"
@@ -646,7 +645,7 @@ const UserManagement = () => {
                                 />
                             </>
                         )}
-                       
+
                         <TextFieldFormsy
                             label="Roles"
                             id="role"
@@ -658,9 +657,9 @@ const UserManagement = () => {
                             InputLabelProps={{
                                 shrink: true
                             }}
-                            // onChange={(value) => setForm({ ...form, roles: value.target.value })}
-                            >
-                           
+                        // onChange={(value) => setForm({ ...form, roles: value.target.value })}
+                        >
+
                         </TextFieldFormsy>
                         <Grid container direction="row" justifyContent="space-between" alignItems="baseline">
                             <Grid item>

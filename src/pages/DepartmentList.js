@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useEffect, useState, useRef } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { makeStyles, useTheme } from '@mui/styles';
@@ -24,7 +25,7 @@ import ListIcon from '@mui/icons-material/List';
 import CircularProgress from '@mui/material/CircularProgress';
 import AddSharpIcon from '@mui/icons-material/AddSharp';
 import {
-    getDepartmentsList,
+    // getDepartmentsList,
     createDepartmentsList,
     updateDepartmentsList,
     deleteDepartmentsList
@@ -38,6 +39,7 @@ import { Stack, TextField, MenuItem, InputAdornment, Grid, Chip } from '@mui/mat
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewArrayIcon from '@mui/icons-material/ViewArray';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -65,13 +67,13 @@ const DepartmentList = () => {
     const classes = useStyles();
     const theme = useTheme();
     const dispatch = useDispatch();
-    const list = useSelector(({ departments }) => departments.departmentsList);
+    const list = useSelector(({ departments }) => departments.departmentslist);
     const count = useSelector(({ departments }) => departments.departmentsCount);
     const loading1 = useSelector(({ loading }) => loading.loading1);
     const initialFields = {
-        department_id: '',
+        departmentid: '',
         departmentname: '',
-        isactive: '',
+        is_active: true,
     };
     const { form, handleChange, setForm, resetForm } = useForm(initialFields);
     const [openDialog, setOpenDialog] = useState(false);
@@ -81,6 +83,8 @@ const DepartmentList = () => {
     const formRef = useRef(null);
     const [removeData, setRemoveData] = useState({});
     const [page, setPage] = useState(0);
+    const [openViewDialog, setopenViewDialog] = useState(false);
+    const [details, setDetails] = useState();
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [search, setSearch] = useState('');
     const [filterRole, setFilterRole] = useState('');
@@ -104,6 +108,13 @@ const DepartmentList = () => {
             }
         });
     };
+    const handleViewOpen = (data) => {
+        setDetails(data);
+        setopenViewDialog(true);
+    };
+    const handleViewClose = () => {
+        setopenViewDialog(false);
+    };
 
     const rows = [
         {
@@ -121,12 +132,19 @@ const DepartmentList = () => {
             sort: true
         },
         {
-            id: 'isactive',
+            id: 'is_active',
             align: 'left',
             disablePadding: false,
             label: 'IS Active',
             sort: true
         },
+        {
+            id: 'actions',
+            align: 'left',
+            disablePadding: false,
+            label: 'Actions',
+            sort: false
+        }
 
     ];
 
@@ -144,16 +162,16 @@ const DepartmentList = () => {
         // );
     };
     useEffect(() => {
-        dispatch(
-            getDepartmentsList({
-                // search,
-                // page: page + 1,
-                // limit: rowsPerPage,
-                // sortBy: order.id,
-                // sortDirection: order.direction,
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getDepartmentsList({
+        //         // search,
+        //         // page: page + 1,
+        //         // limit: rowsPerPage,
+        //         // sortBy: order.id,
+        //         // sortDirection: order.direction,
+        //         // status: filterRole,
+        //     })
+        // );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -169,7 +187,18 @@ const DepartmentList = () => {
         setOpenDialog(false);
     };
 
+    const setFormData = (data1, data2) => {
+        Object.keys(data1).map(function (key1) {
+            Object.keys(data2).map(function (key2) {
+                if (key1 === key2) {
+                    data1[key1] = data2[key2];
+                }
+            });
+        });
+    };
     const updateFun = (data) => {
+        setFormData(initialFields, data);
+
         setForm({
             ...initialFields,
             is_active: String(data.is_active)
@@ -211,31 +240,31 @@ const DepartmentList = () => {
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-        dispatch(
-            getDepartmentsList({
-                // search,
-                // page: newPage + 1,
-                // limit: rowsPerPage,
-                // sortBy: order.id,
-                // sortDirection: order.direction,
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getDepartmentsList({
+        //         // search,
+        //         // page: newPage + 1,
+        //         // limit: rowsPerPage,
+        //         // sortBy: order.id,
+        //         // sortDirection: order.direction,
+        //         // status: filterRole,
+        //     })
+        // );
     };
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
-        dispatch(
-            getDepartmentsList({
-                // search,
-                // page: 0 + 1,
-                // limit: parseInt(event.target.value, 10),
-                // sortBy: order.id,
-                // sortDirection: order.direction,
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getDepartmentsList({
+        //         // search,
+        //         // page: 0 + 1,
+        //         // limit: parseInt(event.target.value, 10),
+        //         // sortBy: order.id,
+        //         // sortDirection: order.direction,
+        //         // status: filterRole,
+        //     })
+        // );
     };
 
     const handleRequestSort = (property) => () => {
@@ -246,34 +275,34 @@ const DepartmentList = () => {
             direction = 'asc';
         }
         setOrder({ direction, id });
-        dispatch(
-            getDepartmentsList({
-                // search,
-                // page: page + 1,
-                // limit: rowsPerPage,
-                // sortBy: id,
-                // sortDirection: direction,
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getDepartmentsList({
+        //         // search,
+        //         // page: page + 1,
+        //         // limit: rowsPerPage,
+        //         // sortBy: id,
+        //         // sortDirection: direction,
+        //         // status: filterRole,
+        //     })
+        // );
     };
 
     const handleSearch = (data) => {
         setSearch(data);
         if (data === '' || data.length > 1) {
-            dispatch(
-                getDepartmentsList({
-                    //   search: data,
-                    //   page: page + 1,
-                    //   limit: rowsPerPage,
-                    //   sortBy: order.id,
-                    //   sortDirection: order.direction,
-                    // status: filterRole,
-                })
-            );
+            // dispatch(
+            //     getDepartmentsList({
+            //         //   search: data,
+            //         //   page: page + 1,
+            //         //   limit: rowsPerPage,
+            //         //   sortBy: order.id,
+            //         //   sortDirection: order.direction,
+            //         // status: filterRole,
+            //     })
+            // );
         }
     };
-    
+
 
     return (
         <div className={classes.root}>
@@ -398,8 +427,8 @@ const DepartmentList = () => {
                                         }
                                     }}>
                                     <TableCell>
-                                        <Tooltip title={res.uuid} placement="top" arrow>
-                                        <ViewArrayIcon/>
+                                        <Tooltip title={res.departmentid} placement="top" arrow>
+                                            <ViewArrayIcon />
                                         </Tooltip>
                                     </TableCell>
                                     <TableCell component="th" scope="row">
@@ -409,20 +438,20 @@ const DepartmentList = () => {
 
                                     <TableCell>
                                         <Chip
-                                            label={res.is_active ? 'Active' : 'Inactive'}
+                                            label={res.is_active ? 'active' : 'Inactive'}
                                             size="small"
                                             color={res.is_active ? 'primary' : 'error'}
                                         />
                                     </TableCell>
                                     <TableCell align="inherit">
-                                        <Stack direction="row" spacing={2}>
+                                        <Stack direction="row" spacing={1}>
                                             <Tooltip title="Edit" arrow>
                                                 <IconButton
                                                     onClick={() => updateFun(res)}
                                                     size="small"
                                                     disableRipple
                                                     sx={{ bgcolor: theme.palette.info.main, color: '#fff' }}>
-                                                   <EditIcon />
+                                                    <EditIcon />
                                                 </IconButton>
                                             </Tooltip>
                                             <Tooltip title="Delete" arrow>
@@ -431,7 +460,16 @@ const DepartmentList = () => {
                                                     size="small"
                                                     disableRipple
                                                     sx={{ bgcolor: theme.palette.error.main, color: '#fff' }}>
-                                                      <DeleteIcon />
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="View" arrow>
+                                                <IconButton
+                                                    onClick={() => handleViewOpen(res)}
+                                                    size="small"
+                                                    disableRipple
+                                                    sx={{ bgcolor: theme.palette.info.main, color: '#fff' }}>
+                                                    <RemoveRedEyeIcon />
                                                 </IconButton>
                                             </Tooltip>
                                         </Stack>
@@ -606,6 +644,73 @@ const DepartmentList = () => {
                         </Grid>
                     </Grid>
                 </Box>
+            </Dialog>
+            <Dialog
+                open={openViewDialog}
+                fullWidth
+                maxWidth="sm"
+                disableEscapeKeyDown
+                aria-labelledby="form-dialog-title"
+                classes={{
+                    paper: 'rounded-8'
+                }}>
+                <Toolbar>
+                    <Typography variant="h5" color="primary">
+                        Department Details
+                    </Typography>
+                </Toolbar>
+                <TableContainer sx={{ px: 2 }}>
+                    <Paper>
+                        <Table aria-label="simple table">
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Department Id
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{details?.departmentid}</Typography>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Department Name
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{details?.departmentname}</Typography>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Status
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{details?.is_active}</Typography>
+                                    </TableCell>
+                                </TableRow>
+
+                            </TableBody>
+                        </Table>
+                    </Paper>
+                </TableContainer>
+                <Grid container justifyContent="space-between" alignItems="baseline" direction="row">
+                    <Grid item />
+                    <Grid item>
+                        <Button
+                            sx={{ mt: 2, mb: 2, px: 4, mr: 2 }}
+                            // fullWidth
+                            variant="contained"
+                            onClick={handleViewClose}
+                            color="warning">
+                            Close
+                        </Button>
+                    </Grid>
+                </Grid>
             </Dialog>
         </div>
     );

@@ -11,30 +11,26 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import { PATH_AUTH, PATH_DASHBOARD } from '../../routes/paths';
+import { PATH_AUTH} from '../../routes/paths';
 import { InputAdornment, IconButton } from '@mui/material';
 import Iconify from '../../components/Iconify';
-import useAuth from '../../hooks/useAuth';
+// import useAuth from '../../hooks/useAuth';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
 import { fetchLoginService } from '../../services/authService'
 
-
-// TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth();
+  // const { login } = useAuth();
   const clientId = "106381978093-gptl8utmu520kd6dqesdavq0vpb9s3mu.apps.googleusercontent.com";
 
   const onSuccess = async (response) => {
     try {
       const { accessToken, profileObj } = response;
-
-
       const apiResponse = await fetch('/auth/google', {
         method: 'get',
         headers: {
@@ -45,7 +41,7 @@ export default function SignIn() {
 
       if (apiResponse.ok) {
         console.log('API request successful!');
-        
+
       } else {
         console.error('API request failed!');
 
@@ -58,20 +54,28 @@ export default function SignIn() {
   const onFailure = (error) => {
     console.error('Login failed:', error);
   };
-  const handleSubmit = async (data) => {
-    console.log(data);
-    // try {
-    //   const response = await login(data.email, data.password).then(() => {
-    //     console.log(response);
-    //    
-    //   });
-    // } catch (error) {
-    //   console.log(error)
-    //   return error
-    // }
+  // const handleSubmit = async (data) => {
+  //   console.log(data);
+  //   try {
+  //     const response = await login(data.email, data.password).then(() => {
+  //       console.log(response);
+  //       // navigate(PATH_DASHBOARD.dashboard)
+  //     });
+  //   } catch (error) {
+  //     console.log(error)
+  //     return error
+  //   }
 
+  // };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const user = { email: data.get('email'), password: data.get('password') };
+    console.log(user);
+    const token = await fetchLoginService(user);
+    console.log(token);
+    localStorage.setItem(token, token);
   };
-  
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -156,7 +160,7 @@ export default function SignIn() {
             </GoogleOAuthProvider>
             <Grid container>
               <Grid item xs>
-                <Link href="" variant="body2" onClick={() => navigate(PATH_AUTH.forgotpassword)}>
+                <Link href="#" variant="body2" onClick={() => navigate(PATH_AUTH.forgotpassword)}>
                   Forgot password?
                 </Link>
               </Grid>

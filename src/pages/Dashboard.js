@@ -8,8 +8,8 @@ const chartWidth = '100%';
 const dataLine = {
   series: [
     {
-      name: 'Line Graph',
-      data: [12, 19, 3, 5, 2, 3],
+      name: 'active users',
+      data: [12, 19, 3,],
     },
   ],
   options: {
@@ -25,7 +25,7 @@ const dataLine = {
       },
     },
     xaxis: {
-      categories: ['January', 'February', 'March', 'April', 'May', 'June'],
+      categories: ['January', 'February', 'March'],
     },
   },
 };
@@ -33,7 +33,7 @@ const dataLine = {
 const dataBar = {
   series: [
     {
-      name: 'Bar Chart',
+      name: 'Manager & Staff',
       data: [12, 19, 3, 5, 2, 3],
     },
   ],
@@ -56,7 +56,7 @@ const dataBar = {
 };
 
 const dataPie = {
-  series: [12, 19, 3, 5, 2, 3],
+  series: [12, 19, 3],
   options: {
     chart: {
       type: 'pie',
@@ -69,7 +69,7 @@ const dataPie = {
         show: false,
       },
     },
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    labels: ['Dept 1', 'Dept 2', 'Dept 3'],
   },
 };
 
@@ -79,12 +79,13 @@ const Dashboard = () => {
       <Typography variant="h6" component="h6" align="left" gutterBottom style={{ marginTop: '20px', marginLeft: '20px' }}>
         Dashboard
       </Typography>
+
       <div style={{ margin: '0 20px' }}>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12} sm={6} md={4}>
             <Card>
               <Typography variant="h6" align="center" gutterBottom>
-                Line Graph
+                Active Users
               </Typography>
               <Chart options={dataLine.options} series={dataLine.series} type="line" height={chartHeight} width={chartWidth} />
             </Card>
@@ -92,7 +93,7 @@ const Dashboard = () => {
           <Grid item xs={12} sm={6} md={4}>
             <Card>
               <Typography variant="h6" align="center" gutterBottom>
-                Bar Chart
+                Manager & Staff
               </Typography>
               <Chart options={dataBar.options} series={dataBar.series} type="bar" height={chartHeight} width={chartWidth} />
             </Card>
@@ -100,7 +101,7 @@ const Dashboard = () => {
           <Grid item xs={12} sm={6} md={4}>
             <Card>
               <Typography variant="h6" align="center" gutterBottom>
-                Pie Chart
+                Departments
               </Typography>
               <Chart options={dataPie.options} series={dataPie.series} type="pie" height={chartHeight} width={chartWidth} />
             </Card>

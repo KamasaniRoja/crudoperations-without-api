@@ -15,8 +15,9 @@ import { useNavigate } from 'react-router-dom';
 import { PATH_AUTH } from '../../routes/paths';
 import Iconify from '../../components/Iconify';
 import BusinessIcon from '@mui/icons-material/Business';
-import GoogleIcon from '@mui/icons-material/Google';
 import { fetchSignupService } from '../../services/authService';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -25,16 +26,44 @@ export default function SignUp() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async(event) => {
+  const clientId = "106381978093-gptl8utmu520kd6dqesdavq0vpb9s3mu.apps.googleusercontent.com";
+
+  const onSuccess = async (response) => {
+    try {
+      const { accessToken, profileObj } = response;
+      const apiResponse = await fetch('/auth/google', {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ accessToken, profileObj }),
+      });
+
+      if (apiResponse.ok) {
+        console.log('API request successful!');
+
+      } else {
+        console.error('API request failed!');
+
+      }
+    } catch (error) {
+      console.error('Error occurred during API request:', error);
+    }
+  };
+
+  const onFailure = (error) => {
+    console.error('Login failed:', error);
+  };
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const user = { email: data.get('email'), password: data.get('password'),hotel_name:data.get('hotel_name') };
+    const user = { email: data.get('email'), password: data.get('password'), hotel_name: data.get('hotel_name') };
     console.log(user);
     const token = await fetchSignupService(user);
     console.log(token);
     localStorage.setItem(token, token);
   };
-  
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -125,15 +154,15 @@ export default function SignUp() {
             >
               Sign Up
             </Button>
-            <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 1.5, mb: 2, gap: '8px', alignItems: 'center' }}
-            >
-              <GoogleIcon />
-              <span>Sign Up With Google</span>
-            </Button>
+            <GoogleOAuthProvider clientId={clientId}>
+              <GoogleLogin
+                onSuccess={onSuccess}
+                onFailure={onFailure}
+                buttonText="Sign Up with Google"
+
+              />
+
+            </GoogleOAuthProvider>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="" variant="body2" onClick={() => navigate(PATH_AUTH.login)}>

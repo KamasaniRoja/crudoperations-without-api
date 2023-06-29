@@ -12,6 +12,7 @@ const steps = ['User Details', 'Security Questions'];
 export default function UserDetails() {
     const [activeStep, setActiveStep] = React.useState(0);
     const [completed, setCompleted] = React.useState({});
+    console.log(setCompleted);
     const [hotelName, setHotelName] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [phoneNumber, setPhoneNumber] = React.useState('');
@@ -75,17 +76,17 @@ export default function UserDetails() {
         setActiveStep(step);
     };
 
-    const handleComplete = () => {
-        const newCompleted = completed;
-        newCompleted[activeStep] = true;
-        setCompleted(newCompleted);
-        handleNext();
-    };
+    // const handleComplete = () => {
+    //     const newCompleted = completed;
+    //     newCompleted[activeStep] = true;
+    //     setCompleted(newCompleted);
+    //     handleNext();
+    // };
 
-    const handleReset = () => {
-        setActiveStep(0);
-        setCompleted({});
-    };
+    // const handleReset = () => {
+    //     setActiveStep(0);
+    //     setCompleted({});
+    // };
 
     const handleSubmit = () => {
         console.log('Submitted Data:');

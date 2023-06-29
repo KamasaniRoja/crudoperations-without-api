@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useEffect, useState, useRef } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { makeStyles, useTheme } from '@mui/styles';
@@ -26,8 +27,9 @@ import AddSharpIcon from '@mui/icons-material/AddSharp';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewArrayIcon from '@mui/icons-material/ViewArray';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import {
-    getRolesList,
+    // getRolesList,
     createRolesList,
     updateRolesList,
     deleteRolesList
@@ -65,13 +67,14 @@ const RolesList = () => {
     const classes = useStyles();
     const theme = useTheme();
     const dispatch = useDispatch();
-    const rolesList = useSelector(({ roles }) => roles.rolesList);
+    const rolesList = useSelector(({ roles }) => roles.roleslist);
     const rolesCount = useSelector(({ roles }) => roles.rolesCount);
     const loading1 = useSelector(({ loading }) => loading.loading1);
     const initialFields = {
-        role_id: '',
-        role_name: '',
-        role_isactive: '',
+        roleid: '',
+        rolename: '',
+        status: true,
+        name: '',
     };
     const { form, handleChange, setForm, resetForm } = useForm(initialFields);
     const [open, setOpen] = useState(false);
@@ -84,6 +87,8 @@ const RolesList = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [search, setSearch] = useState('');
     const [filterRole, setFilterRole] = useState('');
+    const [openViewDialog, setopenViewDialog] = useState(false);
+    const [details, setDetails] = useState();
     const [order, setOrder] = useState({
         direction: 'desc',
         id: 'createdAt'
@@ -107,12 +112,20 @@ const RolesList = () => {
 
     const rows = [
         {
-            id: 'uuid',
+            id: 'roleid',
             align: 'left',
             disablePadding: false,
             label: 'ID',
             sort: true
         },
+        {
+            id: 'name',
+            align: 'left',
+            disablePadding: false,
+            label: 'Name',
+            sort: true
+        },
+
         {
             id: 'rolename',
             align: 'left',
@@ -121,13 +134,19 @@ const RolesList = () => {
             sort: true
         },
         {
-            id: 'role_isactive',
+            id: 'status',
             align: 'left',
             disablePadding: false,
-            label: 'Email',
+            label: 'Status',
             sort: true
         },
-
+        {
+            id: 'actions',
+            align: 'left',
+            disablePadding: false,
+            label: 'Actions',
+            sort: false
+        }
     ];
 
     const handleFilterRole = (event) => {
@@ -144,20 +163,26 @@ const RolesList = () => {
         // );
     };
     useEffect(() => {
-        dispatch(
-            getRolesList({
-                // search,
-                // page: page + 1,
-                // limit: rowsPerPage,
-                // sortBy: order.id,
-                // sortDirection: order.direction,
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getRolesList({
+        //         // search,
+        //         // page: page + 1,
+        //         // limit: rowsPerPage,
+        //         // sortBy: order.id,
+        //         // sortDirection: order.direction,
+        //         // status: filterRole,
+        //     })
+        // );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-
+    const handleViewOpen = (data) => {
+        setDetails(data);
+        setopenViewDialog(true);
+    };
+    const handleViewClose = () => {
+        setopenViewDialog(false);
+    };
 
     const createFun = () => {
         resetForm();
@@ -169,11 +194,20 @@ const RolesList = () => {
         setCreateStatus(false);
         setOpenDialog(false);
     };
-
+    const setFormData = (data1, data2) => {
+        Object.keys(data1).map(function (key1) {
+            Object.keys(data2).map(function (key2) {
+                if (key1 === key2) {
+                    data1[key1] = data2[key2];
+                }
+            });
+        });
+    };
     const updateFun = (data) => {
+        setFormData(initialFields, data);
         setForm({
             ...initialFields,
-            is_active: String(data.is_active)
+            status: String(data.status)
         });
         setOpenDialog(true);
     };
@@ -214,31 +248,31 @@ const RolesList = () => {
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-        dispatch(
-            getRolesList({
-                // search,
-                // page: newPage + 1,
-                // limit: rowsPerPage,
-                // sortBy: order.id,
-                // sortDirection: order.direction,
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getRolesList({
+        //         // search,
+        //         // page: newPage + 1,
+        //         // limit: rowsPerPage,
+        //         // sortBy: order.id,
+        //         // sortDirection: order.direction,
+        //         // status: filterRole,
+        //     })
+        // );
     };
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
-        dispatch(
-            getRolesList({
-                // search,
-                // page: 0 + 1,
-                // limit: parseInt(event.target.value, 10),
-                // sortBy: order.id,
-                // sortDirection: order.direction,
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getRolesList({
+        //         // search,
+        //         // page: 0 + 1,
+        //         // limit: parseInt(event.target.value, 10),
+        //         // sortBy: order.id,
+        //         // sortDirection: order.direction,
+        //         // status: filterRole,
+        //     })
+        // );
     };
 
     const handleRequestSort = (property) => () => {
@@ -249,31 +283,31 @@ const RolesList = () => {
             direction = 'asc';
         }
         setOrder({ direction, id });
-        dispatch(
-            getRolesList({
-                // search,
-                // page: page + 1,
-                // limit: rowsPerPage,
-                // sortBy: id,
-                // sortDirection: direction,
-                // status: filterRole,
-            })
-        );
+        // dispatch(
+        //     getRolesList({
+        //         // search,
+        //         // page: page + 1,
+        //         // limit: rowsPerPage,
+        //         // sortBy: id,
+        //         // sortDirection: direction,
+        //         // status: filterRole,
+        //     })
+        // );
     };
 
     const handleSearch = (data) => {
         setSearch(data);
         if (data === '' || data.length > 1) {
-            dispatch(
-                getRolesList({
-                    //   search: data,
-                    //   page: page + 1,
-                    //   limit: rowsPerPage,
-                    //   sortBy: order.id,
-                    //   sortDirection: order.direction,
-                    // status: filterRole,
-                })
-            );
+            // dispatch(
+            //     getRolesList({
+            //         //   search: data,
+            //         //   page: page + 1,
+            //         //   limit: rowsPerPage,
+            //         //   sortBy: order.id,
+            //         //   sortDirection: order.direction,
+            //         // status: filterRole,
+            //     })
+            // );
         }
     };
 
@@ -401,9 +435,12 @@ const RolesList = () => {
                                         }
                                     }}>
                                     <TableCell>
-                                        <Tooltip title={res.uuid} placement="top" arrow>
+                                        <Tooltip title={res.roleid} placement="top" arrow>
                                             <ViewArrayIcon />
                                         </Tooltip>
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                        <Typography variant="title">{res.name}</Typography>
                                     </TableCell>
                                     <TableCell component="th" scope="row">
                                         <Typography variant="title">{res.rolename}</Typography>
@@ -411,13 +448,13 @@ const RolesList = () => {
 
                                     <TableCell>
                                         <Chip
-                                            label={res.is_active ? 'Active' : 'Inactive'}
+                                            label={res.status ? 'active' : 'Inactive'}
                                             size="small"
-                                            color={res.is_active ? 'primary' : 'error'}
+                                            color={res.status ? 'primary' : 'error'}
                                         />
                                     </TableCell>
                                     <TableCell align="inherit">
-                                        <Stack direction="row" spacing={2}>
+                                        <Stack direction="row" spacing={1}>
                                             <Tooltip title="Edit" arrow>
                                                 <IconButton
                                                     onClick={() => updateFun(res)}
@@ -434,6 +471,15 @@ const RolesList = () => {
                                                     disableRipple
                                                     sx={{ bgcolor: theme.palette.error.main, color: '#fff' }}>
                                                     <DeleteIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="View" arrow>
+                                                <IconButton
+                                                    onClick={() => handleViewOpen(res)}
+                                                    size="small"
+                                                    disableRipple
+                                                    sx={{ bgcolor: theme.palette.info.main, color: '#fff' }}>
+                                                    <RemoveRedEyeIcon />
                                                 </IconButton>
                                             </Tooltip>
                                         </Stack>
@@ -495,6 +541,21 @@ const RolesList = () => {
                             }}
                         // size="small"
                         />
+                        <TextFieldFormsy
+                            label="Role Name"
+                            id="rolename"
+                            name="rolename"
+                            value={form.rolename}
+                            onChange={handleChange}
+                            variant="outlined"
+                            required
+                            fullWidth
+                            // focused
+                            InputLabelProps={{
+                                shrink: true
+                            }}
+                        // size="small"
+                        />
 
                         <TextFieldFormsy
                             label="RoleID"
@@ -519,9 +580,9 @@ const RolesList = () => {
                                 margin="normal"
                                 label="Status"
                                 type="radio"
-                                id="is_active"
-                                name="is_active"
-                                value={form.is_active}
+                                id="status"
+                                name="status"
+                                value={form.status}
                                 onChange={handleChange}
                                 variant="outlined"
                                 required
@@ -609,6 +670,83 @@ const RolesList = () => {
                         </Grid>
                     </Grid>
                 </Box>
+            </Dialog>
+            <Dialog
+                open={openViewDialog}
+                fullWidth
+                maxWidth="sm"
+                disableEscapeKeyDown
+                aria-labelledby="form-dialog-title"
+                classes={{
+                    paper: 'rounded-8'
+                }}>
+                <Toolbar>
+                    <Typography variant="h5" color="primary">
+                        Role Details
+                    </Typography>
+                </Toolbar>
+                <TableContainer sx={{ px: 2 }}>
+                    <Paper>
+                        <Table aria-label="simple table">
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Name
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{details?.name}</Typography>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Role Name
+                                        </Typography>
+                                    </TableCell>
+
+                                    <TableCell>{details?.rolename}</TableCell>
+                                </TableRow>
+
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Role Id
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{details?.roleid}</Typography>
+                                    </TableCell>
+                                </TableRow>
+
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" color="grey">
+                                            Status
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{details?.status}</Typography>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </Paper>
+                </TableContainer>
+                <Grid container justifyContent="space-between" alignItems="baseline" direction="row">
+                    <Grid item />
+                    <Grid item>
+                        <Button
+                            sx={{ mt: 2, mb: 2, px: 4, mr: 2 }}
+                            // fullWidth
+                            variant="contained"
+                            onClick={handleViewClose}
+                            color="warning">
+                            Close
+                        </Button>
+                    </Grid>
+                </Grid>
             </Dialog>
         </div>
     );

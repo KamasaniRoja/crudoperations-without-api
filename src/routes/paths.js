@@ -27,7 +27,6 @@ export const PATH_AUTH = {
   login: path(ROOTS_AUTH, '/login'),
   signup: path(ROOTS_AUTH, '/signup'),
   forgotpassword: path(ROOTS_AUTH, '/forgotpassword'),
-  newpassword: path(ROOTS_AUTH, '/newpassword'),
   userdetails: path(ROOTS_DASHBOARD, '/userdetails'),
 };
 export const PATH_DASHBOARD = {
