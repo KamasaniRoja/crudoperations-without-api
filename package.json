@@ -1,4 +1,5 @@
 {
+  "homepage": "https://KamasaniRoja.github.io/crudoperations-without-api",
   "name": "reviewtask",
   "version": "0.1.0",
   "private": true,
@@ -23,6 +24,7 @@
     "@testing-library/user-event": "^13.5.0",
     "apexcharts": "^3.41.0",
     "axios": "^1.4.0",
+    "caniuse-lite": "^1.0.30001605",
     "format": "^0.2.2",
     "formsy-react": "^2.3.0",
     "jwt-decode": "^3.1.2",
@@ -44,6 +46,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -b main -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -72,6 +76,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "eslint": "^8.44.0",
+    "gh-pages": "^6.1.1",
     "prettier": "^2.8.8"
   }
 }
