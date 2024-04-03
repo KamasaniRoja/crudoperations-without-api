@@ -1,16 +1,16 @@
 /* eslint-disable camelcase */
-import PropTypes from 'prop-types';
-import { createContext, useEffect, useReducer, useState } from 'react';
-import { googleLogout } from '@react-oauth/google';
+import PropTypes from "prop-types";
+import { createContext, useEffect, useReducer, useState } from "react";
+import { googleLogout } from "@react-oauth/google";
 // utils
-import { useDispatch } from 'react-redux';
-import axiosConfig from '../utils/axios';
-import { isValidToken, setSession } from '../utils/jwt';
+import { useDispatch } from "react-redux";
+import axiosConfig from "../utils/axios";
+import { isValidToken, setSession } from "../utils/jwt";
 import {
   fetchSignupService,
   fetchLoginService,
   fetchGoogleLoginService,
-} from '../services/authService';
+} from "../services/authService";
 
 // ----------------------------------------------------------------------
 /* eslint-disable no-unused-expressions */
@@ -47,12 +47,13 @@ const handlers = {
   }),
 };
 
-const reducer = (state, action) => (handlers[action.type] ? handlers[action.type](state, action) : state);
+const reducer = (state, action) =>
+  handlers[action.type] ? handlers[action.type](state, action) : state;
 
 const AuthContext = createContext({
   ...initialState,
-  token: '',
-  method: 'jwt',
+  token: "",
+  method: "jwt",
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   register: () => Promise.resolve(),
@@ -67,21 +68,21 @@ AuthProvider.propTypes = {
 
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [authToken, setAuthToken] = useState('');
+  const [authToken, setAuthToken] = useState("");
   const reduxdispatch = useDispatch();
 
   useEffect(() => {
     const initialize = async () => {
       try {
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem("accessToken");
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
-          const response = await axiosConfig.get('/auth/user/profile');
+          const response = await axiosConfig.get("/auth/user/profile");
 
           const { user_profile } = response.data;
 
           dispatch({
-            type: 'INITIALIZE',
+            type: "INITIALIZE",
             payload: {
               isAuthenticated: true,
               user: user_profile,
@@ -89,19 +90,19 @@ function AuthProvider({ children }) {
           });
         } else {
           dispatch({
-            type: 'INITIALIZE',
+            type: "INITIALIZE",
             payload: {
               isAuthenticated: false,
               user: null,
             },
           });
-          reduxdispatch({ type: 'DESTROY_SESSION' });
+          reduxdispatch({ type: "DESTROY_SESSION" });
           // dispatch(logout());
         }
       } catch (err) {
         console.error(err);
         dispatch({
-          type: 'INITIALIZE',
+          type: "INITIALIZE",
           payload: {
             isAuthenticated: false,
             user: null,
@@ -126,14 +127,14 @@ function AuthProvider({ children }) {
 
     //   setAuthToken(response.data.access_token);
     //   setSession(response.data.access_token);
-    //   const responsenew = await axiosConfig.get('/auth/user/profile');
-    //   console.log(responsenew);
-    //   const { user_profile } = responsenew.data;
+    //   // const responsenew = await axiosConfig.get('/auth/user/profile');
+    //   // console.log(responsenew);
+    //   // const { user_profile } = responsenew.data;
 
     //   dispatch({
     //     type: 'LOGIN',
     //     payload: {
-    //       user: { ...state.user, ...user_profile },
+    //       // user: { ...state.user, ...user_profile },
     //     },
     //   });
 
@@ -150,18 +151,18 @@ function AuthProvider({ children }) {
     });
     if (response.status) {
       const { session_token, session_uuid } = response;
-      localStorage.setItem('sessionToken', session_token);
-      localStorage.setItem('sessionUuid', session_uuid);
+      localStorage.setItem("sessionToken", session_token);
+      localStorage.setItem("sessionUuid", session_uuid);
       return response;
     }
     return response;
   };
 
   const logout = async () => {
-    dispatch({ type: 'LOGOUT' });
+    dispatch({ type: "LOGOUT" });
     setSession(null);
     googleLogout();
-    reduxdispatch({ type: 'DESTROY_SESSION' });
+    reduxdispatch({ type: "DESTROY_SESSION" });
   };
 
   const googleLogin = async (tokenResponse) => {
@@ -170,12 +171,12 @@ function AuthProvider({ children }) {
       if (response.data.access_token) {
         setAuthToken(response.data.access_token);
         setSession(response.data.access_token);
-        const responsenew = await axiosConfig.get('/auth/user/profile');
+        const responsenew = await axiosConfig.get("/auth/user/profile");
 
         const { user_profile } = responsenew.data;
 
         dispatch({
-          type: 'LOGIN',
+          type: "LOGIN",
           payload: {
             user: { ...state.user, ...user_profile },
           },
@@ -196,7 +197,7 @@ function AuthProvider({ children }) {
       value={{
         ...state,
         token: authToken,
-        method: 'jwt',
+        method: "jwt",
         login,
         logout,
         register,

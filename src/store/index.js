@@ -1,35 +1,35 @@
-import { configureStore } from '@reduxjs/toolkit';
-import createReducer from './rootReducer';
+import { configureStore } from "@reduxjs/toolkit";
+import createReducer from "./rootReducer";
 
-const rootReducer = require('./rootReducer');
+const rootReducer = require("./rootReducer");
 
 const reduxLogger = require(`redux-logger`);
 
 const store = configureStore({
   reducer: createReducer(),
   middleware: (getDefaultMiddleware) => {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       const { logger } = reduxLogger;
 
       return getDefaultMiddleware({
         serializableCheck: false,
         thunk: true,
-        immutableCheck: true
+        immutableCheck: true,
       }).concat(logger);
     }
     return getDefaultMiddleware({
       serializableCheck: false,
       thunk: true,
-      immutableCheck: true
+      immutableCheck: true,
     });
   },
-  devTools: process.env.NODE_ENV === 'development'
+  devTools: process.env.NODE_ENV === "development",
 });
 
 store.asyncReducers = {};
 
-if (process.env.NODE_ENV === 'development' && module.hot) {
-  module.hot.accept('./rootReducer', () => {
+if (process.env.NODE_ENV === "development" && module.hot) {
+  module.hot.accept("./rootReducer", () => {
     const newRootReducer = rootReducer.default;
     store.replaceReducer(newRootReducer.createReducer());
   });

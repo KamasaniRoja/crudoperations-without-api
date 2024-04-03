@@ -1,57 +1,78 @@
-import { useRoutes } from 'react-router-dom';
-import  Dashboard  from '../pages/Dashboard';
-import Users from '../pages/UserManagement';
-import RolesList from '../pages/RolesList';
-import DepartmentList from '../pages/DepartmentList';
-import Login from '../pages/auth/Login';
-import SignUp from '../pages/auth/SignUp';
-import ForgotPasswordForm from '../pages/auth/ForgotPassword';
-import UserDetails from '../pages/auth/UserDetails';
+import { useRoutes } from "react-router-dom";
+import Dashboard from "../pages/Dashboard";
+import Users from "../pages/UserManagement";
+import RolesList from "../pages/RolesList";
+import DepartmentList from "../pages/DepartmentList";
+import Login from "../pages/auth/Login";
+import SignUp from "../pages/auth/SignUp";
+import ForgotPasswordForm from "../pages/auth/ForgotPassword";
+import UpdateUserDetails from "../pages/auth/UpdateUserDetails";
+import Appbar from "../components/Appbar";
+import { UserDetails } from "../pages/UserDetails";
+import { RoleDetails } from "../pages/RoleDetails";
+import { DepartmentDetails } from "../pages/DepartmentDetails"
+import AuthGuard from "../components/auth/AuthGuard";
 
 export default function Router() {
   return useRoutes([
     {
-      path: 'dashboard',
-      element: <Dashboard />
+      path: "/",
+      element: <Appbar />,
+      children: [
+        {
+          path: "dashboard",
+          element: <Dashboard />,
+        },
+        {
+          path: "usermanagement",
+          children: [
+            { path: '', element: <Users /> },
+            { path: ':id', element: <UserDetails /> },
+          ],
+        },
+        {
+          path: 'roleslist',
+          children: [
+            { path: '', element: <RolesList /> },
+            { path: ':id', element: <RoleDetails /> },
+          ],
+        },
 
+        {
+          path: 'departmentlist',
+          children: [
+            { path: '', element: <DepartmentList /> },
+            { path: ':id', element: <DepartmentDetails /> },
+          ],
+        },
+
+
+      ],
     },
 
     {
-      path: '/usermanagement',
-      element: <Users />
+      path: "/login",
+      element: <Login />,
     },
     {
-      path: '/roleslist',
-      element: <RolesList />
+      path: "/signup",
+      element: <SignUp />,
     },
     {
-      path: '/departmentlist',
-      element: <DepartmentList />
+      path: "/forgotpassword",
+      element: <ForgotPasswordForm />,
     },
     {
-      path: '/login',
-      element: <Login />
+      path: "/updateuserdetails",
+      element: <UpdateUserDetails />,
     },
-    {
-      path: '/signup',
-      element: <SignUp />
-    },
-    {
-      path: '/forgotpassword',
-      element: <ForgotPasswordForm />
-    },
-   
-    {path:'/userdetails',
-    element:<UserDetails/>
-  }
   ]);
 }
+// const SignIn = Loadable(lazy(() => import('../pages/auth/Login')));
 
 // import { lazy } from 'react';
 // import { Navigate, useRoutes, useLocation } from 'react-router-dom';
 // import Appbar from '../components/Appbar'
-
-
 
 // // auth
 // import AuthGuard from '../components/auth/AuthGuard';
@@ -123,16 +144,12 @@ export default function Router() {
 //       ),
 //     },
 
-
-
 //   ]);
 // }
 
 // // Public Pages //
 // const Login = Loadable(lazy(() => import('../pages/auth/Login')));
 // const RegisterPage = Loadable(lazy(() => import('../pages/auth/SignUp')));
-
-
 
 // // User Pages //
 // const DashboardPage = Loadable(lazy(() => import('../pages/Dashboard')));
@@ -142,9 +159,3 @@ export default function Router() {
 // const DepartmentDetails = Loadable(lazy(() => import('../pages/DepartmentDetails')));
 // const Roles = Loadable(lazy(() => import('../pages/RolesList')));
 // const RoleDetails = Loadable(lazy(() => import('../pages/RoleDetails')));
-
-
-
-
-
-

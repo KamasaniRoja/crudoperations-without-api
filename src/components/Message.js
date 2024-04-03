@@ -1,44 +1,44 @@
-import { amber, blue } from '@mui/material/colors';
-import { styled } from '@mui/material/styles';
-import { Icon } from '@iconify/react';
-import IconButton from '@mui/material/IconButton';
-import Snackbar from '@mui/material/Snackbar';
-import SnackbarContent from '@mui/material/SnackbarContent';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import { memo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { hideMessage } from '../store/messageSlice';
+import { amber, blue } from "@mui/material/colors";
+import { styled } from "@mui/material/styles";
+import { Icon } from "@iconify/react";
+import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
+import SnackbarContent from "@mui/material/SnackbarContent";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import { memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { hideMessage } from "../store/messageSlice";
 
 const StyledSnackbar = styled(Snackbar)(({ theme, variant }) => ({
-  '& .Message-content': {
-    ...(variant === 'success' && {
-      backgroundColor: 'rgb(50,186,118)',
-      color: '#FFFFFF'
+  "& .Message-content": {
+    ...(variant === "success" && {
+      backgroundColor: "rgb(50,186,118)",
+      color: "#FFFFFF",
     }),
 
-    ...(variant === 'error' && {
+    ...(variant === "error" && {
       backgroundColor: theme.palette.error.dark,
-      color: theme.palette.getContrastText(theme.palette.error.dark)
+      color: theme.palette.getContrastText(theme.palette.error.dark),
     }),
 
-    ...(variant === 'info' && {
+    ...(variant === "info" && {
       backgroundColor: blue[600],
-      color: '#FFFFFF'
+      color: "#FFFFFF",
     }),
 
-    ...(variant === 'warning' && {
+    ...(variant === "warning" && {
       backgroundColor: amber[600],
-      color: '#FFFFFF'
-    })
-  }
+      color: "#FFFFFF",
+    }),
+  },
 }));
 
 const variantIcon = {
-  success: 'clarity:success-standard-line',
-  warning: 'material-symbols:error-circle-rounded-outline',
-  error: 'material-symbols:error-circle-rounded-outline',
-  info: 'material-symbols:error-circle-rounded-outline'
+  success: "clarity:success-standard-line",
+  warning: "material-symbols:error-circle-rounded-outline",
+  error: "material-symbols:error-circle-rounded-outline",
+  info: "material-symbols:error-circle-rounded-outline",
 };
 
 function Message() {
@@ -52,12 +52,13 @@ function Message() {
       open={state}
       onClose={() => dispatch(hideMessage())}
       ContentProps={{
-        variant: 'body2',
+        variant: "body2",
         headlineMapping: {
-          body1: 'div',
-          body2: 'div'
-        }
-      }}>
+          body1: "div",
+          body2: "div",
+        },
+      }}
+    >
       <SnackbarContent
         className="Message-content"
         message={
@@ -66,8 +67,8 @@ function Message() {
               {variantIcon[options.variant] && (
                 <Icon
                   icon={variantIcon[options.variant]}
-                  width={'18'}
-                  height={'18'}
+                  width={"18"}
+                  height={"18"}
                   color="inherit"
                 />
               )}
@@ -83,9 +84,10 @@ function Message() {
             aria-label="Close"
             color="inherit"
             onClick={() => dispatch(hideMessage())}
-            size="large">
+            size="large"
+          >
             <Icon icon="material-symbols:close" color="inherit" />
-          </IconButton>
+          </IconButton>,
         ]}
       />
     </StyledSnackbar>

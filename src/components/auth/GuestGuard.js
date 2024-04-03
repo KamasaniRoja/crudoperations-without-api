@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from './useAuthContext';
-import { PATH_DASHBOARD } from '../../routes/paths';
+import PropTypes from "prop-types";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "./useAuthContext";
+import { PATH_DASHBOARD } from "../../routes/paths";
 
 // ----------------------------------------------------------------------
 
@@ -22,6 +22,5 @@ export default function GuestGuard({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
-  
   return <> {children} </>;
 }

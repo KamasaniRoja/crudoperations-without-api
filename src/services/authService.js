@@ -1,35 +1,41 @@
-import axiosConfig from '../utils/axios';
+import axiosConfig from "../utils/axios";
 
 const handleResponse = (error) => {
-    if (
-        error.response &&
-        (error.response.status === 500 ||
-            error.response.status === 400 ||
-            error.response.status === 401 ||
-            error.response.status === 422)
-    ) {
-        return error.response && error.response.data;
-    }
+  if (
+    error.response &&
+    (error.response.status === 500 ||
+      error.response.status === 400 ||
+      error.response.status === 401 ||
+      error.response.status === 422)
+  ) {
     return error.response && error.response.data;
+  }
+  return error.response && error.response.data;
 };
 export const fetchLoginService = (data) =>
-    axiosConfig
-        .post(`/auth/login`, data)
-        .then((response) => response)
-        .catch(handleResponse);
+  axiosConfig
+    .post(`/auth/login`, data)
+    .then((response) => response)
+    .catch(handleResponse);
 
 export const fetchSignupService = (data) =>
-    axiosConfig
-        .post(`/auth/signup`, data)
-        .then((response) => response.data)
-        .catch(handleResponse);
+  axiosConfig
+    .post(`/auth/signup`, data)
+    .then((response) => response.data)
+    .catch(handleResponse);
+
+export const fetchUserService = (data) =>
+  axiosConfig
+    .post(`/auth/user/${data}`, data)
+    .then((response) => response.data)
+    .catch(handleResponse);
 
 export function saveTokenInLocalStorage(tokenDetails) {
-    localStorage.setItem('Details', tokenDetails);
+  localStorage.setItem("Details", tokenDetails);
 }
 
 export const fetchGoogleLoginService = (data) =>
-    axiosConfig
-        .get(``)
-        .then((response) => response.data)
-        .catch(handleResponse);
+  axiosConfig
+    .get(``)
+    .then((response) => response.data)
+    .catch(handleResponse);

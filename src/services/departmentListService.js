@@ -1,4 +1,4 @@
-import axiosConfig from '../utils/axios';
+import axiosConfig from "../utils/axios";
 
 const handleResponse = (error) => {
   if (
@@ -15,7 +15,7 @@ const handleResponse = (error) => {
 
 export const fetchDepartmentService = (data) =>
   axiosConfig
-    .get(`` )
+    .get(``)
     .then((response) => response.data)
     .catch(handleResponse);
 
@@ -36,5 +36,3 @@ export const deleteDepartmentService = (data) =>
     .post(``, data)
     .then((response) => response.data)
     .catch(handleResponse);
-
-

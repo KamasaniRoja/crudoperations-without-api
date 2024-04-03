@@ -152,82 +152,216 @@
 
 // export default departmentsSlice.reducer;
 
+// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+// export const createDepartmentsList = createAsyncThunk(
+//   "departments/createDepartmentsList",
+//   async (data, { getState }) => {
+//     const state = getState();
+//     const { departmentslist, departmentsCount } = state.departments;
+//     return {
+//       list: [...departmentslist, { ...data, id: departmentslist.length + 1 }],
+//       count: departmentsCount + 1,
+//     };
+//   }
+// );
+
+// export const updateDepartmentsList = createAsyncThunk(
+//   "departments/updateDepartmentsList",
+//   async (list, { getState }) => {
+//     console.log(list);
+//     const state = getState();
+//     let { departmentslist } = state.departments;
+//     departmentslist = await departmentslist.map((res) => {
+//       if (res.id === list.id) {
+//         return { ...list };
+//       }
+//       return res;
+//     });
+//     return departmentslist;
+//   }
+// );
+// export const deleteDepartmentsList = createAsyncThunk(
+//   "departments/deleteDepartmentsList",
+//   async (id, { getState }) => {
+//     console.log(id);
+//     const state = getState();
+//     let { departmentslist } = state.departments;
+//     departmentslist = await departmentslist.filter(
+//       (res) => res.id !== id
+//     );
+//     const count = departmentslist.length;
+//     return {
+//       list: departmentslist,
+//       count: count,
+//     };
+//   }
+// );
+
+// const initialState = {
+//   departmentslist: [
+//     {
+//       id: 1,
+//       departmentname: "abc",
+//       email: "abc@gmail.com",
+//       is_active: false,
+//     },
+//     {
+//       id: 2,
+//       departmentname: "xyz",
+//       email: "xyz@gmail.com",
+//       is_active: true,
+//     },
+//     {
+//       id: 3,
+//       departmentname: "sam",
+//       email: "sam@gmail.com",
+//       is_active: false,
+//     },
+//   ],
+//   departmentsCount: 3,
+// };
+
+// const departmentsSlice = createSlice({
+//   name: "departments",
+//   initialState,
+//   reducers: {},
+//   extraReducers: {
+//     [createDepartmentsList.fulfilled]: (state, action) => ({
+//       ...state,
+//       departmentslist: action.payload.list,
+//       departmentsCount: action.payload.count,
+//     }),
+//     [updateDepartmentsList.fulfilled]: (state, action) => ({
+//       ...state,
+//       departmentslist: action.payload,
+//     }),
+//     [deleteDepartmentsList.fulfilled]: (state, action) => ({
+//       ...state,
+//       departmentslist: action.payload.list,
+//       departmentsCount: action.payload.count,
+//     }),
+//   },
+// });
+
+// export default departmentsSlice.reducer;
+
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const createDepartmentsList = createAsyncThunk('users/createDepartmentsList', async (data, { getState }) => {
+export const createDepartmentsList = createAsyncThunk(
+  "departments/createDepartmentsList",
+  async (data, { getState }) => {
     const state = getState();
     const { departmentslist, departmentsCount } = state.departments;
+    const newDepartment = { ...data, id: departmentslist.length + 1 };
+    const updatedDepartmentsList = [...departmentslist, newDepartment];
+    // Update local storage
+    localStorage.setItem(
+      "departmentsList",
+      JSON.stringify(updatedDepartmentsList)
+    );
+    localStorage.setItem("departmentsCount", departmentsCount + 1);
     return {
-        list: [...departmentslist, { ...data, id: departmentslist.length + 1 }], count: departmentsCount + 1,
-    }
-});
+      list: updatedDepartmentsList,
+      count: departmentsCount + 1,
+    };
+  }
+);
 
-export const updateDepartmentsList = createAsyncThunk('departments/updateDepartmentsList', async (list, { getState }) => {
+export const updateDepartmentsList = createAsyncThunk(
+  "departments/updateDepartmentsList",
+  async (list, { getState }) => {
     const state = getState();
     let { departmentslist } = state.departments;
-    departmentslist = await departmentslist.map((res) => {
-        if (res.id === list.id) {
-            return { ...list };
-        }
-        return res;
+    departmentslist = departmentslist.map((res) => {
+      if (res.id === list.id) {
+        return { ...list };
+      }
+      return res;
     });
+    // Update local storage
+    localStorage.setItem(
+      "departmentsList",
+      JSON.stringify(departmentslist)
+    );
     return departmentslist;
-});
-export const deleteDepartmentsList = createAsyncThunk('departments/deleteDepartmentsList', async (id, { getState }) => {
+  }
+);
+
+export const deleteDepartmentsList = createAsyncThunk(
+  "departments/deleteDepartmentsList",
+  async (id, { getState }) => {
     const state = getState();
     let { departmentslist } = state.departments;
-    departmentslist = await departmentslist.filter((res) => res.id !== id);
-    return departmentslist;
-});
+    departmentslist = departmentslist.filter((res) => res.id !== id);
+    const count = departmentslist.length;
+    // Update local storage
+    localStorage.setItem(
+      "departmentsList",
+      JSON.stringify(departmentslist)
+    );
+    localStorage.setItem("departmentsCount", count);
+    return {
+      list: departmentslist,
+      count: count,
+    };
+  }
+);
 
 const initialState = {
-    departmentslist: [
-        {
-            departmentid: 1,
-            departmentname: 'abc',
-            email: 'abc@gmail.com',
-            is_active: 'active',
-
-        },
-        {
-            departmentid: 2,
-            departmentname: 'xyz',
-            email: 'xyz@gmail.com',
-            is_active: 'active',
-
-        },
-        {
-            departmentid: 3,
-            departmentname: 'sam',
-            email: 'sam@gmail.com',
-            is_active: 'Inactive',
-
-        },
-
+  departmentslist:
+    JSON.parse(localStorage.getItem("departmentsList")) || [
+      {
+        id: 1,
+        departmentname: "Front Office Department",
+        email: "abc@gmail.com",
+        is_active: 'false',
+      },
+      {
+        id: 2,
+        departmentname: "Management Department",
+        email: "xyz@gmail.com",
+        is_active: 'true',
+      },
+      {
+        id: 3,
+        departmentname: "HouseKeeping Department",
+        email: "sam@gmail.com",
+        is_active: 'false',
+      },
+      {
+        id: 4,
+        departmentname: "Maintenance Department",
+        email: "jam@gmail.com",
+        is_active: 'false',
+      },
     ],
-    departmentsCount: '3',
+  departmentsCount: localStorage.getItem("departmentsCount")
+    ? parseInt(localStorage.getItem("departmentsCount"))
+    : 3,
 };
 
 const departmentsSlice = createSlice({
-    name: 'departments',
-    initialState,
-    reducers: {},
-    extraReducers: {
-        [createDepartmentsList.fulfilled]: (state, action) => ({
-            ...state,
-            departmentslist: action.payload.list,
-            departmentsCount: action.payload.count,
-        }),
-        [updateDepartmentsList.fulfilled]: (state, action) => ({
-            ...state,
-            departmentslist: action.payload
-        }),
-        [deleteDepartmentsList.fulfilled]: (state, action) => ({
-            ...state,
-            departmentslist: action.payload
-        })
-    }
+  name: "departments",
+  initialState,
+  reducers: {},
+  extraReducers: {
+    [createDepartmentsList.fulfilled]: (state, action) => ({
+      ...state,
+      departmentslist: action.payload.list,
+      departmentsCount: action.payload.count,
+    }),
+    [updateDepartmentsList.fulfilled]: (state, action) => ({
+      ...state,
+      departmentslist: action.payload,
+    }),
+    [deleteDepartmentsList.fulfilled]: (state, action) => ({
+      ...state,
+      departmentslist: action.payload.list,
+      departmentsCount: action.payload.count,
+    }),
+  },
 });
 
 export default departmentsSlice.reducer;

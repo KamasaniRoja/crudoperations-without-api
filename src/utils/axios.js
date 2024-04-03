@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 const axiosConfig = axios.create({
   // withCredentials: true,

@@ -1,11 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const loaderSlice = createSlice({
-  name: 'loading',
+  name: "loading",
   initialState: {
     loading1: false,
     loading2: false,
-    loading3: false
+    loading3: false,
   },
   reducers: {
     startLoading1: (state) => {
@@ -25,8 +25,8 @@ const loaderSlice = createSlice({
     },
     clearLoading3: (state) => {
       state.loading3 = false;
-    }
-  }
+    },
+  },
 });
 
 export const {
@@ -35,7 +35,7 @@ export const {
   startLoading2,
   clearLoading2,
   startLoading3,
-  clearLoading3
+  clearLoading3,
 } = loaderSlice.actions;
 
 export default loaderSlice.reducer;

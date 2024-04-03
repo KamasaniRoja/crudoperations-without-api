@@ -1,19 +1,17 @@
-import React from 'react';
-import Provider from 'react-redux/es/components/Provider';
-import Appbar from './components/Appbar';
-import store from './store';
-import { AuthProvider } from './contexts/JWTContext';
+import React from "react";
+import Provider from "react-redux/es/components/Provider";
+import store from "./store";
+import { AuthProvider } from "./contexts/JWTContext";
+import Router from "./routes";
 
 function App() {
   return (
     <>
-
       <Provider store={store}>
         <AuthProvider>
-          <Appbar />
+          <Router />
         </AuthProvider>
       </Provider>
-
     </>
   );
 }

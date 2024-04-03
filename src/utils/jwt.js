@@ -1,8 +1,8 @@
-import jwtDecode from 'jwt-decode';
+import jwtDecode from "jwt-decode";
 // routes
 // import history from '../configurations/@history';
-import { PATH_AUTH } from '../routes/paths';
-import axiosConfig from './axios';
+import { PATH_AUTH } from "../routes/paths";
+import axiosConfig from "./axios";
 // ----------------------------------------------------------------------
 
 const isValidToken = (accessToken) => {
@@ -29,25 +29,25 @@ const handleTokenExpired = (exp) => {
 
   expiredTimer = setTimeout(() => {
     // eslint-disable-next-line no-alert
-    alert('Token expired');
+    alert("Token expired");
 
-    localStorage.removeItem('accessToken');
+    localStorage.removeItem("accessToken");
     window.location.href = PATH_AUTH.login;
   }, timeLeft);
 };
 
 const setSession = (accessToken) => {
   if (accessToken) {
-    localStorage.setItem('accessToken', accessToken);
-    axiosConfig.defaults.headers.common.Accept = 'application/json';
-    axiosConfig.defaults.headers.common['Content-Type'] = 'application/json';
+    localStorage.setItem("accessToken", accessToken);
+    axiosConfig.defaults.headers.common.Accept = "application/json";
+    axiosConfig.defaults.headers.common["Content-Type"] = "application/json";
     axiosConfig.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
     // This function below will handle when token is expired
     const { exp } = jwtDecode(accessToken); // ~5 days by minimals server
     handleTokenExpired(exp);
   } else {
-    localStorage.removeItem('accessToken');
+    localStorage.removeItem("accessToken");
     localStorage.clear();
     delete axiosConfig.defaults.headers.common.Authorization;
     // history.push(PATH_AUTH.login);

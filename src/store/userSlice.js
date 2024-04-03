@@ -1,3 +1,4 @@
+//With Apis connections
 // import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // import { showMessage } from './messageSlice';
 // import {
@@ -152,85 +153,217 @@
 
 // export default usersSlice.reducer;
 
+//Without apis connections
+
+// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+// export const createUsersList = createAsyncThunk(
+//   "users/createUsersList",
+//   async (data, { getState }) => {
+//     const state = getState();
+//     const { userslist, usersCount } = state.users;
+//     return {
+//       list: [...userslist, { ...data, id: userslist.length + 1 }],
+//       count: usersCount + 1,
+//     };
+//   }
+// );
+
+// export const updateUsersList = createAsyncThunk(
+//   "users/updateUsersList",
+//   async (list, { getState }) => {
+//     console.log(list);
+//     const state = getState();
+//     let { userslist } = state.users;
+//     userslist = await userslist.map((res) => {
+//       if (res.id === list.id) {
+//         return { ...list };
+//       }
+//       return res;
+//     });
+//     return userslist;
+//   }
+// );
+
+
+// export const deleteUsersList = createAsyncThunk(
+//   "users/deleteUsersList",
+//   async (id, { getState }) => {
+//     const state = getState();
+//     let { userslist, usersCount } = state.users;
+//     userslist = await userslist.filter((res) => res.id !== id);
+//     const count = userslist.length; // Update the count based on the filtered list length
+//     return {
+//       list: userslist,
+//       count: count,
+//     };
+//   }
+// );
+
+// const initialState = {
+//   userslist: [
+//     {
+//       id: 1,
+//       name: "abc",
+//       email: "abc@gmail.com",
+//       phone_number: "998987787",
+//       status: "active",
+//       role: "Employee",
+//     },
+//     {
+//       id: 2,
+//       name: "xyz",
+//       email: "xyz@gmail.com",
+//       phone_number: "8898787878",
+//       status: "Inactive",
+//       role: "Admin",
+//     },
+//     {
+//       id: 3,
+//       name: "sam",
+//       email: "sam@gmail.com",
+//       phone_number: "98788787878",
+//       status: "Inactive",
+//       role: "Owner",
+//     },
+//   ],
+//   usersCount: 3,
+// };
+
+// const usersSlice = createSlice({
+//   name: "users",
+//   initialState,
+//   reducers: {},
+//   extraReducers: {
+//     [createUsersList.fulfilled]: (state, action) => ({
+//       ...state,
+//       userslist: action.payload.list,
+//       usersCount: action.payload.count,
+//     }),
+//     [updateUsersList.fulfilled]: (state, action) => ({
+//       ...state,
+//       userslist: action.payload,
+//     }),
+//     [deleteUsersList.fulfilled]: (state, action) => ({
+//       ...state,
+//       userslist: action.payload.list,
+//       usersCount: action.payload.count,
+//     }),
+//   },
+// });
+
+// export default usersSlice.reducer;
+
+//Without apis connections and storing data in local storage
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const createUsersList = createAsyncThunk('users/createUsersList', async (data, { getState }) => {
+export const createUsersList = createAsyncThunk(
+  "users/createUsersList",
+  async (data, { getState }) => {
     const state = getState();
     const { userslist, usersCount } = state.users;
+    const newUser = { ...data, id: userslist.length + 1 };
+    const updatedUsersList = [...userslist, newUser];
+    // Update local storage
+    localStorage.setItem("usersList", JSON.stringify(updatedUsersList));
+    localStorage.setItem("usersCount", usersCount + 1);
     return {
-        list: [...userslist, { ...data, id: userslist.length + 1 }], count: usersCount + 1,
-    }
-});
+      list: updatedUsersList,
+      count: usersCount + 1,
+    };
+  }
+);
 
-export const updateUsersList = createAsyncThunk('users/updateUsersList',async(list,{getState}) => {
-    const state=getState();
-    let {userslist}=state.users;
-    userslist = await userslist.map((res) => {
+export const updateUsersList = createAsyncThunk(
+  "users/updateUsersList",
+  async (list, { getState }) => {
+    const state = getState();
+    let { userslist } = state.users;
+    userslist = userslist.map((res) => {
       if (res.id === list.id) {
-        return {...list};
+        return { ...list };
       }
       return res;
     });
+    // Update local storage
+    localStorage.setItem("usersList", JSON.stringify(userslist));
     return userslist;
-  });
-  export const deleteUsersList = createAsyncThunk('users/deleteUsersList',async(id,{getState})=>{
-     const state=getState();
-    let { userslist}=state.users;
-    userslist = await userslist.filter((res) => res.id !==id);
-   return userslist;
-  });
+  }
+);
+
+export const deleteUsersList = createAsyncThunk(
+  "users/deleteUsersList",
+  async (id, { getState }) => {
+    const state = getState();
+    let { userslist } = state.users;
+    userslist = userslist.filter((res) => res.id !== id);
+    const count = userslist.length;
+    // Update local storage
+    localStorage.setItem("usersList", JSON.stringify(userslist));
+    localStorage.setItem("usersCount", count);
+    return {
+      list: userslist,
+      count: count,
+    };
+  }
+);
 
 const initialState = {
-    userslist: [
-        {
-            id: 1,
-            name: 'abc',
-            email: 'abc@gmail.com',
-            phone_number: '998987787',
-            status: 'active',
-            role: 'Employee',
-        },
-        {
-            id: 2,
-            name: 'xyz',
-            email: 'xyz@gmail.com',
-            phone_number: '8898787878',
-            status: 'Inactive',
-            role: 'Admin',
-        },
-        {
-            id: 3,
-            name: 'sam',
-            email: 'sam@gmail.com',
-            phone_number: '98788787878',
-            status: 'Inactive',
-            role: 'Owner',
-        },
-
-    ],
-    usersCount: '3',
+  userslist: JSON.parse(localStorage.getItem("usersList")) || [
+    {
+      id: 1,
+      name: "abc",
+      email: "abc@gmail.com",
+      phone_number: "998987787",
+      is_active: 'true',
+      role: "Manager",
+      department: "Front Office Department",
+    },
+    {
+      id: 2,
+      name: "xyz",
+      email: "xyz@gmail.com",
+      phone_number: "8898787878",
+      is_active: 'false',
+      role: "Admin",
+      department: "Management Department",
+    },
+    {
+      id: 3,
+      name: "sam",
+      email: "sam@gmail.com",
+      phone_number: "98788787878",
+      is_active: 'true',
+      role: "Staff",
+      department: "HouseKeeping Department",
+    },
+  ],
+  usersCount: localStorage.getItem("usersCount")
+    ? parseInt(localStorage.getItem("usersCount"))
+    : 3,
 };
 
 const usersSlice = createSlice({
-    name: 'users',
-    initialState,
-    reducers: {},
-    extraReducers: {
-        [createUsersList.fulfilled]: (state, action) => ({
-            ...state,
-            userslist: action.payload.list,
-            usersCount: action.payload.count,
-        }),
-        [updateUsersList.fulfilled]: (state, action) => ({
-            ...state,
-            userslist: action.payload
-        }),
-        [deleteUsersList.fulfilled]: (state, action) => ({
-            ...state,
-            userslist: action.payload
-        })
-    }
+  name: "users",
+  initialState,
+  reducers: {},
+  extraReducers: {
+    [createUsersList.fulfilled]: (state, action) => ({
+      ...state,
+      userslist: action.payload.list,
+      usersCount: action.payload.count,
+    }),
+    [updateUsersList.fulfilled]: (state, action) => ({
+      ...state,
+      userslist: action.payload,
+    }),
+    [deleteUsersList.fulfilled]: (state, action) => ({
+      ...state,
+      userslist: action.payload.list,
+      usersCount: action.payload.count,
+    }),
+  },
 });
 
 export default usersSlice.reducer;

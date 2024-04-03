@@ -1,179 +1,242 @@
-import { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
-import { PATH_AUTH} from '../../routes/paths';
-import { InputAdornment, IconButton } from '@mui/material';
-import Iconify from '../../components/Iconify';
+import { useState } from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
+import { PATH_AUTH, PATH_DASHBOARD } from "../../routes/paths";
+import { InputAdornment, IconButton } from "@mui/material";
+import Iconify from "../../components/Iconify";
 // import useAuth from '../../hooks/useAuth';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { GoogleLogin } from '@react-oauth/google';
-import { fetchLoginService } from '../../services/authService'
-
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
+import { fetchLoginService } from "../../services/authService";
+import Paper from '@mui/material/Paper';
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [invalidEmail, setInvalidEmail] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
   // const { login } = useAuth();
-  const clientId = "106381978093-gptl8utmu520kd6dqesdavq0vpb9s3mu.apps.googleusercontent.com";
+  const clientId =
+    "106381978093-gptl8utmu520kd6dqesdavq0vpb9s3mu.apps.googleusercontent.com";
+  const scope = "email";
 
   const onSuccess = async (response) => {
     try {
       const { accessToken, profileObj } = response;
-      const apiResponse = await fetch('/auth/google', {
-        method: 'get',
+      const apiResponse = await fetch("/auth/google", {
+        method: "get",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ accessToken, profileObj }),
       });
 
       if (apiResponse.ok) {
-        console.log('API request successful!');
-
+        console.log("API request successful!");
       } else {
-        console.error('API request failed!');
-
+        console.error("API request failed!");
       }
     } catch (error) {
-      console.error('Error occurred during API request:', error);
+      console.error("Error occurred during API request:", error);
     }
   };
 
   const onFailure = (error) => {
-    console.error('Login failed:', error);
+    console.error("Login failed:", error);
   };
-  // const handleSubmit = async (data) => {
-  //   console.log(data);
-  //   try {
-  //     const response = await login(data.email, data.password).then(() => {
-  //       console.log(response);
-  //       // navigate(PATH_DASHBOARD.dashboard)
-  //     });
-  //   } catch (error) {
-  //     console.log(error)
-  //     return error
-  //   }
 
-  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setSubmitted(true);
+
     const data = new FormData(event.currentTarget);
-    const user = { email: data.get('email'), password: data.get('password') };
-    console.log(user);
-    const token = await fetchLoginService(user);
-    console.log(token);
-    localStorage.setItem(token, token);
+    const user = { email: data.get("email"), password: data.get("password") };
+
+    if (!user.email) {
+      setEmailError(true);
+      setInvalidEmail(false);
+    } else if (!/\S+@\S+\.\S+/.test(user.email)) {
+      setEmailError(false);
+      setInvalidEmail(true);
+    } else {
+      setEmailError(false);
+      setInvalidEmail(false);
+    }
+
+    if (!user.password) {
+      setPasswordError(true);
+    } else {
+      setPasswordError(false);
+    }
+
+    if (user.email && user.password) {
+      const token = await fetchLoginService(user);
+      localStorage.setItem(token, token);
+
+      if (token?.data?.data?.access_token) {
+        navigate(PATH_DASHBOARD.dashboard);
+      }
+    }
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
-        <Box
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
           sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            backgroundRepeat: 'no-repeat',
+            backgroundColor: (t) =>
+              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: '#1976d2' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Iconify color="#1976d2" icon={'material-symbols:mail'} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  autoComplete="new-password"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Iconify color="#1976d2" icon={'mdi:password'} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                          <Iconify color="#1976d2" icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+        />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <Box
+            sx={{
+              my: 8,
+              mx: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: "#1976d2" }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
+              sx={{ mt: 1 }}
             >
-              Sign In
-            </Button>
-            <GoogleOAuthProvider clientId={clientId}>
-              <GoogleLogin
-                onSuccess={onSuccess}
-                onFailure={onFailure}
-                buttonText="Login with Google"
-
-              />
-
-            </GoogleOAuthProvider>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2" onClick={() => navigate(PATH_AUTH.forgotpassword)}>
-                  Forgot password?
-                </Link>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Iconify
+                            color="#1976d2"
+                            icon={"material-symbols:mail"}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
+                    error={submitted && (emailError || invalidEmail)}
+                    helperText={
+                      submitted && emailError
+                        ? "Email is required"
+                        : submitted && invalidEmail
+                          ? "Invalid email address"
+                          : ""
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    autoComplete="new-password"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Iconify color="#1976d2" icon={"mdi:password"} />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            <Iconify
+                              color="#1976d2"
+                              icon={
+                                showPassword ? "eva:eye-fill" : "eva:eye-off-fill"
+                              }
+                            />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    error={submitted && passwordError}
+                    helperText={submitted && passwordError ? "Password is required" : ""}
+                  />
+                </Grid>
               </Grid>
-              <Grid item>
-                <Link href="" variant="body2" onClick={() => navigate(PATH_AUTH.signup)}>
-                  {"Don't have an account? Sign Up"}
-                </Link>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+              <GoogleOAuthProvider clientId={clientId} scope={scope}>
+                <GoogleLogin
+                  onSuccess={onSuccess}
+                  onFailure={onFailure}
+                  buttonText="Login with Google"
+                />
+              </GoogleOAuthProvider>
+              <Grid container>
+                <Grid item xs sx={{ my: 2 }}>
+                  <Link
+                    href=""
+                    variant="body2"
+                    onClick={() => navigate(PATH_AUTH.forgotpassword)}
+                  >
+                    Forgot password?
+                  </Link>
+                </Grid>
+                <Grid item sx={{ my: 2 }}>
+                  <Link
+                    href=""
+                    variant="body2"
+                    onClick={() => navigate(PATH_AUTH.signup)}
+                  >
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-
-      </Container>
+        </Grid>
+      </Grid>
     </ThemeProvider>
   );
 }

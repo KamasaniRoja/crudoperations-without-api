@@ -1,4 +1,4 @@
-import axiosConfig from '../utils/axios';
+import axiosConfig from "../utils/axios";
 
 const handleResponse = (error) => {
   if (
@@ -15,9 +15,7 @@ const handleResponse = (error) => {
 
 export const fetchRolesListService = (data) =>
   axiosConfig
-    .get(
-      ``
-    )
+    .get(``)
     .then((response) => response.data)
     .catch(handleResponse);
 
@@ -40,7 +38,7 @@ export const deleteRolesListService = (data) =>
     .catch(handleResponse);
 
 export const getSingleRoleListService = (data) =>
-    axiosConfig
-        .get(``)
-        .then((response) => response.data)
-        .catch(handleResponse);
+  axiosConfig
+    .get(``)
+    .then((response) => response.data)
+    .catch(handleResponse);

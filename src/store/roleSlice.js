@@ -154,77 +154,104 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const createRolesList = createAsyncThunk('roles/createRolesList', async (data, { getState }) => {
+export const createRolesList = createAsyncThunk(
+  "roles/createRolesList",
+  async (data, { getState }) => {
     const state = getState();
     const { roleslist, rolesCount } = state.roles;
+    const newRole = { ...data, id: roleslist.length + 1 };
+    const updatedRolesList = [...roleslist, newRole];
+    // Update local storage
+    localStorage.setItem("rolesList", JSON.stringify(updatedRolesList));
+    localStorage.setItem("rolesCount", rolesCount + 1);
     return {
-        list: [...roleslist, { ...data, id: roleslist.length + 1 }], count: rolesCount + 1,
-    }
-});
+      list: updatedRolesList,
+      count: rolesCount + 1,
+    };
+  }
+);
 
-export const updateRolesList = createAsyncThunk('roles/updateRolesList', async (list, { getState }) => {
+export const updateRolesList = createAsyncThunk(
+  "roles/updateRolesList",
+  async (list, { getState }) => {
     const state = getState();
     let { roleslist } = state.roles;
-    roleslist = await roleslist.map((res) => {
-        if (res.id === list.id) {
-            return { ...list };
-        }
-        return res;
+    roleslist = roleslist.map((res) => {
+      if (res.id === list.id) {
+        return { ...list };
+      }
+      return res;
     });
+    // Update local storage
+    localStorage.setItem("rolesList", JSON.stringify(roleslist));
     return roleslist;
-});
-export const deleteRolesList = createAsyncThunk('roles/deleteRolesList', async (id, { getState }) => {
+  }
+);
+
+export const deleteRolesList = createAsyncThunk(
+  "roles/deleteRolesList",
+  async (id, { getState }) => {
     const state = getState();
     let { roleslist } = state.roles;
-    roleslist = await roleslist.filter((res) => res.id !== id);
-    return roleslist;
-});
+    roleslist = roleslist.filter((res) => res.id !== id);
+    const count = roleslist.length;
+    // Update local storage
+    localStorage.setItem("rolesList", JSON.stringify(roleslist));
+    localStorage.setItem("rolesCount", count);
+    return {
+      list: roleslist,
+      count: count,
+    };
+  }
+);
 
 const initialState = {
-    roleslist: [
-        {
-            roleid: 1,
-            name: 'xyz',
-            rolename: 'role1',
-            status: 'active',
-
-        },
-        {
-            roleid: 2,
-            name: 'abc',
-            rolename: 'role2',
-            status: 'Inactive',
-        },
-        {
-            roleid: 3,
-            name: 'pqr',
-            rolename: 'role3',
-            status: 'active',
-        },
-
-    ],
-    rolesCount: '3',
+  roleslist: JSON.parse(localStorage.getItem("rolesList")) || [
+    {
+      id: 1,
+      name: "xyz",
+      rolename: "Staff",
+      is_active: 'true',
+    },
+    {
+      id: 2,
+      name: "abc",
+      rolename: "Admin",
+      is_active: 'false',
+    },
+    {
+      id: 3,
+      name: "pqr",
+      rolename: "Manager",
+      is_active: 'true',
+    },
+  ],
+  rolesCount: localStorage.getItem("rolesCount")
+    ? parseInt(localStorage.getItem("rolesCount"))
+    : 3,
 };
 
 const rolesSlice = createSlice({
-    name: 'roles',
-    initialState,
-    reducers: {},
-    extraReducers: {
-        [createRolesList.fulfilled]: (state, action) => ({
-            ...state,
-            roleslist: action.payload.list,
-            rolesCount: action.payload.count,
-        }),
-        [updateRolesList.fulfilled]: (state, action) => ({
-            ...state,
-            roleslist: action.payload
-        }),
-        [deleteRolesList.fulfilled]: (state, action) => ({
-            ...state,
-            roleslist: action.payload
-        })
-    }
+  name: "roles",
+  initialState,
+  reducers: {},
+  extraReducers: {
+    [createRolesList.fulfilled]: (state, action) => ({
+      ...state,
+      roleslist: action.payload.list,
+      rolesCount: action.payload.count,
+    }),
+    [updateRolesList.fulfilled]: (state, action) => ({
+      ...state,
+      roleslist: action.payload,
+    }),
+    [deleteRolesList.fulfilled]: (state, action) => ({
+      ...state,
+      roleslist: action.payload.list,
+      rolesCount: action.payload.count,
+    }),
+  },
 });
 
 export default rolesSlice.reducer;
+
